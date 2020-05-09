@@ -1,12 +1,18 @@
 from flask import Flask, render_template, url_for, request, redirect
 import csv
+import mysql.connector
 app = Flask(__name__)
+
+cnx = mysql.connector.connect(user='root', password='password',
+                              host='127.0.0.1',
+                              database='logins',
+                              auth_plugin='mysql_native_password')
+cnx.close()
 
 
 @app.route('/')
 def home_page():
     return render_template('index.html')
-
 
 @app.route('/<string:html_page>')
 def index_page(html_page):
