@@ -1,18 +1,14 @@
 from flask import Flask, render_template, url_for, request, redirect
 import csv
 import mysql.connector
+from database import update_table
 app = Flask(__name__)
-
-cnx = mysql.connector.connect(user='root', password='password',
-                              host='127.0.0.1',
-                              database='logins',
-                              auth_plugin='mysql_native_password')
-cnx.close()
 
 
 @app.route('/')
 def home_page():
     return render_template('index.html')
+
 
 @app.route('/<string:html_page>')
 def index_page(html_page):
@@ -32,7 +28,8 @@ def write_to_csv(data):
         email = data['Email']
         subject = data['Subject']
         message = data['Message']
-        csv_writer = csv.writer(database, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        csv_writer = csv.writer(database, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow([email, subject, message])
 
 
@@ -40,7 +37,8 @@ def write_to_csv(data):
 def submit():
     if request.method == 'POST':
         data = request.form.to_dict()
-        write_to_csv(data)
+        # write_to_csv(data)
+        update_table(data)
         return redirect('/thankyou.html')
     else:
         return 'Something Went Wrong!!!'
